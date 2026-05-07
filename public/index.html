@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>InterfaithDebate — Talk to a Stranger About God</title>
+  <link rel="icon" type="image/png" href="favicon.png" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- LANDING SCREEN -->
+  <div id="screen-landing" class="screen active">
+    <div class="bg-grid"></div>
+    <div class="bg-glow"></div>
+
+    <header class="site-header">
+      <img src="favicon.png" alt="Tower of Babel" class="site-logo-icon" />
+      <div class="logo">Interfaith<span>Debate</span></div>
+      <p class="tagline">Get matched with a stranger. Different faith. Real conversation.</p>
+    </header>
+
+    <main class="landing-main">
+      <div class="card setup-card">
+        <h2 class="card-title">Who are you?</h2>
+
+        <div class="field">
+    <label>Chat mode</label>
+    <div class="mode-picker">
+      <button class="mode-btn active" data-mode="text">
+        <span class="mode-btn-icon">💬</span>
+        <span class="mode-btn-label">Text Chat</span>
+      </button>
+      <button class="mode-btn" data-mode="video">
+        <span class="mode-btn-icon">🎥</span>
+        <span class="mode-btn-label">Video Chat</span>
+        <span class="mode-btn-badge">Beta</span>
+      </button>
+    </div>
+  </div>
+        <div class="field">
+          <label for="display-name">Display name</label>
+          <input type="text" id="display-name" placeholder="e.g. curious_agnostic" maxlength="24" />
+        </div>
+
+        <div class="field">
+          <label>Your faith / worldview</label>
+          <div class="faith-picker" id="faith-picker">
+            <div class="faith-selected" id="faith-selected">
+              <span class="faith-icon" id="faith-selected-icon">🌐</span>
+              <span id="faith-selected-label">Select your faith...</span>
+              <span class="fp-arrow">▾</span>
+            </div>
+            <div class="faith-dropdown" id="faith-dropdown"></div>
+          </div>
+          <div class="custom-faith-wrap" id="custom-faith-wrap">
+            <input type="text" id="custom-faith-input" placeholder="Enter your faith or worldview..." maxlength="40" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Who do you want to match with?</label>
+          <div class="match-picker" id="match-picker">
+            <p class="match-placeholder">Select your faith first</p>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Conversation style</label>
+          <div class="toggle-group">
+            <button class="toggle-btn active" data-style="casual">Casual chat</button>
+            <button class="toggle-btn" data-style="debate">Structured debate</button>
+            <button class="toggle-btn" data-style="ama">Ask me anything</button>
+          </div>
+        </div>
+
+        <button id="btn-find" class="btn-primary" disabled>Find a match</button>
+        <p class="disclaimer">Anonymous · No account needed · Be respectful</p>
+      </div>
+
+      <div class="stats-strip">
+        <div class="stat"><span class="stat-num" id="stat-online">—</span><span class="stat-label">online now</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><span class="stat-num" id="stat-chats">—</span><span class="stat-label">conversations today</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><span class="stat-num">34</span><span class="stat-label">faiths represented</span></div>
+      </div>
+    </main>
+  </div>
+
+  <!-- WAITING SCREEN -->
+  <div id="screen-waiting" class="screen">
+    <div class="bg-grid"></div>
+    <div class="waiting-content">
+      <div class="spinner-ring"></div>
+      <h2 class="waiting-title">Finding your match...</h2>
+      <p class="waiting-sub">Looking for someone with a different perspective</p>
+      <button id="btn-cancel" class="btn-ghost">Cancel</button>
+    </div>
+  </div>
+
+  <!-- CHAT SCREEN -->
+  <div id="screen-chat" class="screen">
+    <div class="chat-header">
+      <div class="chat-header-left">
+        <div class="logo small">Interfaith<span>Debate</span></div>
+        <div class="match-info">
+          <span class="match-name" id="match-name">Stranger</span>
+          <span class="match-faith" id="match-faith">Unknown faith</span>
+        </div>
+      </div>
+      <div class="chat-header-right">
+        <div class="style-badge" id="style-badge">Casual</div>
+        <button id="btn-skip" class="btn-ghost small">Skip →</button>
+        <button id="btn-end" class="btn-danger small">End</button>
+      </div>
+    </div>
+    <div class="chat-messages" id="chat-messages">
+      <div class="system-msg" id="msg-connected"></div>
+    </div>
+    <div class="chat-input-bar">
+      <textarea id="chat-input" placeholder="Type your message..." rows="1" maxlength="1000"></textarea>
+      <button id="btn-send" class="btn-send">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- DISCONNECTED SCREEN -->
+  <div id="screen-disconnected" class="screen">
+    <div class="bg-grid"></div>
+    <div class="waiting-content">
+      <div class="disc-icon">✦</div>
+      <h2 class="waiting-title">Conversation ended</h2>
+      <p class="waiting-sub" id="disc-reason">Your match disconnected.</p>
+      <button id="btn-again" class="btn-primary">Find another match</button>
+      <button id="btn-home" class="btn-ghost">Back to home</button>
+    </div>
+  </div>
+<!-- VIDEO CHAT SCREEN -->
+<div id="screen-video" class="screen">
+  <div class="video-layout">
+ 
+    <!-- Left: video stage -->
+    <div class="video-stage" id="video-stage">
+ 
+      <!-- Remote video -->
+      <video id="video-remote" class="video-remote" autoplay playsinline></video>
+ 
+      <!-- Placeholder shown before peer connects -->
+      <div class="video-remote-placeholder" id="video-remote-placeholder">
+        <span class="placeholder-icon">👤</span>
+        <p>Waiting for peer video…</p>
+      </div>
+ 
+      <!-- Connecting / negotiating overlay -->
+      <div class="video-connecting-overlay" id="video-connecting-overlay">
+        <div class="connecting-spinner"></div>
+        <p class="connecting-text" id="video-connecting-text">Connecting…</p>
+      </div>
+ 
+      <!-- Match name overlay -->
+      <div class="video-match-overlay" id="video-match-overlay" style="display:none">
+        <div class="video-match-dot"></div>
+        <div>
+          <div class="video-match-overlay-name" id="video-match-name">Stranger</div>
+          <div class="video-match-overlay-faith" id="video-match-faith"></div>
+        </div>
+      </div>
+ 
+      <!-- Local pip -->
+      <div class="video-local-pip" id="video-local-pip">
+        <video id="video-local" autoplay playsinline muted></video>
+        <div class="pip-cam-off" id="pip-cam-off">🚫</div>
+        <span class="pip-label">You</span>
+      </div>
+ 
+      <!-- Controls -->
+      <div class="video-controls">
+        <button class="ctrl-btn" id="ctrl-mic" title="Toggle mic">🎙️</button>
+        <button class="ctrl-btn" id="ctrl-cam" title="Toggle camera">📷</button>
+        <div class="ctrl-divider"></div>
+        <select class="cam-select" id="cam-select" title="Switch camera"></select>
+        <div class="ctrl-divider"></div>
+        <button class="ctrl-btn" id="ctrl-skip-video" title="Skip">⏭️</button>
+        <button class="ctrl-btn danger" id="ctrl-end-video" title="End call">📵</button>
+      </div>
+    </div>
+ 
+    <!-- Right: text side-panel -->
+    <div class="video-side-panel">
+      <div class="side-panel-header">
+        <span class="side-panel-title">Messages</span>
+        <div class="style-badge" id="video-style-badge">Casual</div>
+      </div>
+      <div class="side-panel-msgs" id="video-chat-messages"></div>
+      <div class="side-panel-input-bar">
+        <textarea id="video-chat-input" placeholder="Type…" rows="1" maxlength="1000"></textarea>
+        <button class="btn-send" id="video-btn-send">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+  
+  <!-- Socket.io is served automatically by your Node server -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="client.js"></script>
+  <script src="video.js"></script>
+</body>
+</html>
