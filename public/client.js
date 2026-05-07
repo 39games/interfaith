@@ -7,6 +7,125 @@
 window.onerror = function (msg, url, line, col, error) {
   console.error("REAL ERROR:", msg, "at", line, col, error);
 };
+
+// ═══════════════════════════════════════════════
+// SVG ICON LIBRARY
+// Each key maps to an inline SVG string (24×24 viewBox)
+// ═══════════════════════════════════════════════
+const ICONS = {
+  // ── Christian cross
+  cross: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="10.5" y="2" width="3" height="20" rx="1.2" fill="currentColor"/><rect x="3" y="7" width="18" height="3" rx="1.2" fill="currentColor"/></svg>`,
+  // ── Orthodox cross (three bars)
+  orthodox: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="10.5" y="2" width="3" height="20" rx="1" fill="currentColor"/><rect x="4" y="7" width="16" height="2.5" rx="1" fill="currentColor"/><rect x="6" y="12.5" width="12" height="2.5" rx="1" fill="currentColor"/><rect x="8.5" y="17.5" width="7" height="2" rx="1" transform="rotate(-12 8.5 17.5)" fill="currentColor"/></svg>`,
+  // ── Crescent & star (Islam)
+  crescent: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.5 4C8.36 4 5 7.36 5 11.5S8.36 19 12.5 19c1.74 0 3.34-.6 4.6-1.6A7.5 7.5 0 0 1 9 11.5 7.5 7.5 0 0 1 17.1 4.6 7.44 7.44 0 0 0 12.5 4z" fill="currentColor"/><polygon points="18,3 18.7,5.2 21,5.2 19.15,6.6 19.85,8.8 18,7.4 16.15,8.8 16.85,6.6 15,5.2 17.3,5.2" fill="currentColor"/></svg>`,
+  // ── Star of David (Judaism)
+  star_david: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M12 22l-3.09-6.26L2 14.73l5-4.87L5.82 3 12 6.23 18.18 3 17 9.87l5 4.86-6.91 1.01z" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>`,
+  // ── Dharma wheel (Buddhism)
+  dharma: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="2.2" fill="currentColor"/><line x1="12" y1="3" x2="12" y2="21" stroke="currentColor" stroke-width="1.5"/><line x1="3" y1="12" x2="21" y2="12" stroke="currentColor" stroke-width="1.5"/><line x1="5.6" y1="5.6" x2="18.4" y2="18.4" stroke="currentColor" stroke-width="1.5"/><line x1="18.4" y1="5.6" x2="5.6" y2="18.4" stroke="currentColor" stroke-width="1.5"/></svg>`,
+  // ── Om symbol (Hinduism)
+  om: `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><text x="3" y="19" font-size="17" font-family="serif" fill="currentColor">ॐ</text></svg>`,
+  // ── Khanda (Sikhism)
+  khanda: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="12" y1="2" x2="12" y2="22" stroke="currentColor" stroke-width="2"/><path d="M5 8 Q12 14 19 8" stroke="currentColor" stroke-width="1.6" fill="none"/><path d="M5 16 Q12 10 19 16" stroke="currentColor" stroke-width="1.6" fill="none"/><circle cx="12" cy="12" r="2.5" stroke="currentColor" stroke-width="1.6" fill="none"/></svg>`,
+  // ── Yin-yang (Taoism)
+  yinyang: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M12 3 A9 9 0 0 1 12 21 A4.5 4.5 0 0 1 12 12 A4.5 4.5 0 0 0 12 3z" fill="currentColor"/><circle cx="12" cy="7.5" r="1.5" fill="currentColor"/><circle cx="12" cy="16.5" r="1.5" fill="white"/></svg>`,
+  // ── Lantern (Confucianism)
+  lantern: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 4h6v1.5C17 7 18 9 18 12s-1 5-3 6.5V20H9v-1.5C7 17 6 15 6 12s1-5 3-6.5V4z" stroke="currentColor" stroke-width="1.5"/><line x1="12" y1="2" x2="12" y2="4" stroke="currentColor" stroke-width="1.5"/><line x1="12" y1="20" x2="12" y2="22" stroke="currentColor" stroke-width="1.5"/></svg>`,
+  // ── Torii gate (Shinto)
+  torii: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><line x1="2" y1="7" x2="22" y2="7" stroke="currentColor" stroke-width="2"/><line x1="3.5" y1="10" x2="20.5" y2="10" stroke="currentColor" stroke-width="1.5"/><line x1="7" y1="7" x2="7" y2="22" stroke="currentColor" stroke-width="2"/><line x1="17" y1="7" x2="17" y2="22" stroke="currentColor" stroke-width="2"/><path d="M2 7 Q12 3 22 7" stroke="currentColor" stroke-width="2" fill="none"/></svg>`,
+  // ── Jain hand (Ahimsa)
+  jain: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9 19V9.5a1.5 1.5 0 0 1 3 0V14a1.5 1.5 0 0 1 3 0v-2a1.5 1.5 0 0 1 3 0v5c0 2.76-2.24 5-5 5H9.5A3.5 3.5 0 0 1 6 18.5v-5a1.5 1.5 0 0 1 3 0" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="12" cy="17" r="1" fill="currentColor"/></svg>`,
+  // ── Flame (Zoroastrian)
+  flame: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2C10 6 7 8 7 12a5 5 0 0 0 10 0c0-2-1-3.5-2-5-0.5 1.5-1 2.5-2 3 1-3-1-6-1-8z" fill="currentColor"/></svg>`,
+  // ── Atom (Atheism/Science)
+  atom: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="2" fill="currentColor"/><ellipse cx="12" cy="12" rx="9" ry="3.5" stroke="currentColor" stroke-width="1.5"/><ellipse cx="12" cy="12" rx="9" ry="3.5" stroke="currentColor" stroke-width="1.5" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="9" ry="3.5" stroke="currentColor" stroke-width="1.5" transform="rotate(120 12 12)"/></svg>`,
+  // ── Question mark (Agnostic)
+  question: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.5-2.5 2-2.5 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="17.5" r="1.2" fill="currentColor"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/></svg>`,
+  // ── Sparkle / star (Spiritual)
+  sparkle: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>`,
+  // ── Galaxy / nebula (Deism)
+  galaxy: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="2" fill="currentColor"/><ellipse cx="12" cy="12" rx="9" ry="4" stroke="currentColor" stroke-width="1.4" stroke-dasharray="2 2"/><circle cx="12" cy="12" r="6" stroke="currentColor" stroke-width="1.4" stroke-dasharray="3 3"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.2"/></svg>`,
+  // ── Crescent moon (Wiccan/Pagan)
+  moon: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="currentColor"/></svg>`,
+  // ── Thor's hammer / lightning (Norse)
+  lightning: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13 2L4 14h7l-2 8 11-12h-7l2-8z" fill="currentColor"/></svg>`,
+  // ── Shamrock / leaf (Celtic)
+  leaf: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 22V12M12 12c0-3-2-5-4.5-5S3 9 3 11.5 5 14 8 14c-3 0-5 2-5 4.5S5 22 7.5 22 10 20 10 17c0 3 2 5 4.5 5S19 20 19 17.5 17 15 14 15c3 0 5-2 5-4.5S17 7 14.5 7 12 9 12 12z" stroke="currentColor" stroke-width="1.6" fill="none"/></svg>`,
+  // ── Herb/sprout (pagan other)
+  sprout: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 22V12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M12 12C12 8 9 5 5 5c0 4 3 7 7 7z" fill="currentColor"/><path d="M12 12C12 8 15 5 19 5c0 4-3 7-7 7z" fill="currentColor"/></svg>`,
+  // ── Feather (Indigenous)
+  feather: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.24 4.76a6 6 0 0 0-8.49 0L4 12.51V20h7.49l7.75-7.75a6 6 0 0 0 0-7.49z" stroke="currentColor" stroke-width="1.6" fill="none"/><line x1="4" y1="20" x2="12" y2="12" stroke="currentColor" stroke-width="1.5"/></svg>`,
+  // ── Pencil (Other/custom)
+  pencil: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" stroke="currentColor" stroke-width="1.6" fill="none"/></svg>`,
+  // ── Globe (Any faith)
+  globe: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><path d="M12 3C10 7 10 17 12 21M12 3C14 7 14 17 12 21M3 12h18" stroke="currentColor" stroke-width="1.4"/><path d="M4.2 8h15.6M4.2 16h15.6" stroke="currentColor" stroke-width="1.2"/></svg>`,
+  // ── Shuffle (Any different)
+  shuffle: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><polyline points="16 3 21 3 21 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><line x1="4" y1="20" x2="21" y2="3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><polyline points="21 16 21 21 16 21" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 15l6 6M4 4l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>`,
+  // ── Book (Abrahamic)
+  book: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" stroke="currentColor" stroke-width="1.6"/></svg>`,
+  // ── World / compass (Eastern)
+  compass: `<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.6"/><polygon points="12,7 14,12 12,17 10,12" fill="currentColor"/><circle cx="12" cy="12" r="1.5" fill="white"/></svg>`,
+};
+
+// Map faith/match icon keys to ICONS entries
+const ICON_MAP = {
+  // Christian variants
+  '✝️':  'cross',
+  '☦️':  'orthodox',
+  // Islam
+  '☪️':  'crescent',
+  // Judaism
+  '✡️':  'star_david',
+  // Buddhism
+  '☸️':  'dharma',
+  // Hinduism
+  '🕉️': 'om',
+  // Sikh
+  '🪯':  'khanda',
+  // Taoism
+  '☯️':  'yinyang',
+  // Confucian
+  '🏮':  'lantern',
+  // Shinto
+  '⛩️':  'torii',
+  // Jain
+  '🤝':  'jain',
+  // Zoroastrian
+  '🔥':  'flame',
+  // Atheist
+  '⚛️':  'atom',
+  // Agnostic
+  '❓':  'question',
+  // Spiritual
+  '🌟':  'sparkle',
+  // Deist
+  '🌌':  'galaxy',
+  // Wiccan
+  '🌙':  'moon',
+  // Norse
+  '⚡':  'lightning',
+  // Celtic
+  '🍀':  'leaf',
+  // Pagan other
+  '🌿':  'sprout',
+  // Indigenous
+  '🪶':  'feather',
+  // Other
+  '✏️':  'pencil',
+  // Match options
+  '🌐':  'globe',
+  '🔀':  'shuffle',
+  '📖':  'book',
+  '🌏':  'compass',
+};
+
+function getIcon(emojiOrKey) {
+  const key = ICON_MAP[emojiOrKey] || ICON_MAP[emojiOrKey.trim()];
+  if (key && ICONS[key]) return ICONS[key];
+  // fallback: render as text
+  return `<span style="font-size:13px;line-height:1">${emojiOrKey}</span>`;
+}
+
 const FAITHS = [
   { id:'christian_protestant', label:'Christian (Protestant)',        icon:'✝️', broad:'christian', broader:'abrahamic' },
   { id:'christian_catholic',   label:'Christian (Catholic)',          icon:'✝️', broad:'christian', broader:'abrahamic' },
@@ -227,7 +346,7 @@ function buildFaithDropdown() {
     html += `<div class="faith-group-label">${group.label}</div>`;
     items.forEach(f => {
       html += `<div class="faith-option" data-id="${f.id}">
-        <span class="faith-icon">${f.icon}</span>
+        <span class="faith-icon svg-icon">${getIcon(f.icon)}</span>
         <span>${f.label}</span>
       </div>`;
     });
@@ -241,7 +360,8 @@ function buildFaithDropdown() {
 function pickFaith(id) {
   state.faithId = id;
   const faith = FAITHS.find(f => f.id === id);
-  faithSelIcon.textContent  = faith.icon;
+  faithSelIcon.innerHTML  = getIcon(faith.icon);
+  faithSelIcon.classList.add('svg-icon');
   faithSelLabel.textContent = faith.label;
   faithDropdown.querySelectorAll('.faith-option').forEach(el => {
     el.classList.toggle('selected', el.dataset.id === id);
@@ -265,7 +385,7 @@ function buildMatchPicker() {
   matchPickerEl.innerHTML = `
     <div class="mp-picker" id="mp-picker">
       <div class="mp-selected" id="mp-selected">
-        <span class="faith-icon" id="mp-sel-icon">🌐</span>
+        <span class="faith-icon svg-icon" id="mp-sel-icon">${ICONS.globe}</span>
         <span id="mp-sel-label">Any faith</span>
         <span class="fp-arrow">▾</span>
       </div>
@@ -298,7 +418,7 @@ function buildMatchPicker() {
       }
       const sel = state.matchPref === opt.id ? 'selected' : '';
       html += `<div class="mp-option ${sel}" data-id="${opt.id}" data-label="${opt.label}" data-icon="${opt.icon}">
-        <span class="faith-icon">${opt.icon}</span>${opt.label}
+        <span class="faith-icon svg-icon">${getIcon(opt.icon)}</span>${opt.label}
       </div>`;
       hasAny = true;
     });
@@ -308,8 +428,9 @@ function buildMatchPicker() {
 
     mpList.querySelectorAll('.mp-option').forEach(el => {
       el.addEventListener('click', () => {
-        state.matchPref      = el.dataset.id;
-        mpSelIcon.textContent  = el.dataset.icon;
+        state.matchPref        = el.dataset.id;
+        mpSelIcon.innerHTML    = getIcon(el.dataset.icon);
+        mpSelIcon.classList.add('svg-icon');
         mpSelLabel.textContent = el.dataset.label;
         mpPicker.classList.remove('open');
         renderList(mpSearch.value);
